@@ -1,0 +1,12 @@
+mysql:
+  adapter: mysql2
+  host: host.docker.internal
+  username: root
+  password: rootpassword
+  database: blog_db
+
+mongodb:
+  adapter: mongodb
+  host: host.docker.internal
+  port: 27017
+  database: blog_db_migrated

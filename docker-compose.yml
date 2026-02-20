@@ -1,0 +1,64 @@
+
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:15
+    container_name: postgres15
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: appdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql8
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+
+  mongify:
+    build:
+      context: ./mongify
+    container_name: mongify
+    working_dir: /work
+    volumes:
+      - ./mongify:/work
+    entrypoint: ["sleep","infinity"]
+
+  pgloader:
+    image: dimitri/pgloader:latest
+    container_name: pgloader
+    working_dir: /work
+    volumes:
+      - ./:/work
+    entrypoint: ["sleep","infinity"]
+
+volumes:
+  mongodb_data:
+  postgres_data:
+  mysql_data:
